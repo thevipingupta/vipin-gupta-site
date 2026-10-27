@@ -166,7 +166,6 @@
       return h('li', { class: 'timeline__item' },
         h('span', { class: 'timeline__dot', 'aria-hidden': 'true' }),
         h('article', { class: 'card' },
-          h('p', { class: 'timeline__dates' }, role.dates),
           h('h3', null, role.title),
           h('p', { class: 'card__meta' }, role.company + (role.location ? ' · ' + role.location : '')),
           h('ul', null, role.highlights.map(function (line) {

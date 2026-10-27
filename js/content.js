@@ -34,13 +34,12 @@ window.SITE_CONTENT = {
     }
   },
 
-  // Roles from the resume. Add the dates for each role. The resume lists durations only.
+  // Roles from the resume. The site shows no dates for roles.
   experience: [
     {
       title: "Specialist Leader, AI & Data",
       company: "Deloitte Consulting LLP",
       location: "Chicago, IL",
-      dates: "[add start year] to present",
       highlights: [
         "Lead data strategy and solution architecture for healthcare and public-sector clients, from discovery through a multi-year roadmap and scaled rollout.",
         "Led a clinical data repository built on FHIR that aggregates patient data, including labs, imaging, prescriptions and diagnoses, for real-time access by clinicians and patients.",
@@ -52,7 +51,6 @@ window.SITE_CONTENT = {
       title: "Technology Project Lead, Healthcare Payer Analytics",
       company: "Deloitte Consulting LLP",
       location: "",
-      dates: "30 months, [add years]",
       highlights: [
         "Integrated data from multiple source systems into an analytics platform that gives providers and internal teams performance insight.",
         "Worked with data modelers and DBAs to define data requirements, and with business analysts to define new functional and technical solutions.",
@@ -63,7 +61,6 @@ window.SITE_CONTENT = {
       title: "Data Engineer, Healthcare Reporting Programs",
       company: "Deloitte Consulting LLP",
       location: "",
-      dates: "Multiple engagements, [add years]",
       highlights: [
         "Delivered quarterly reporting for employer, market and provider scorecards, combining data from heterogeneous sources.",
         "Enhanced ACO attribution reporting and implemented new source systems into existing data marts."
@@ -73,7 +70,6 @@ window.SITE_CONTENT = {
       title: "Senior ETL Consultant",
       company: "[add employer]",
       location: "Chicago, IL",
-      dates: "[add years]",
       highlights: [
         "Built a data warehouse for investment data across fixed income, equities, derivatives and loans, with star and snowflake schema design.",
         "Implemented change data capture and incremental loading, and tuned Informatica mappings and database performance.",
@@ -84,7 +80,6 @@ window.SITE_CONTENT = {
       title: "ETL Consultant and Developer",
       company: "[add employer]",
       location: "",
-      dates: "[add years]",
       highlights: [
         "Designed dimensional data warehouse models and ETL pipelines for manufacturing sales, cost and product analytics.",
         "Built automated extraction and loading from RDBMS sources into Oracle, and delivered reports for business users."
