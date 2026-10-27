@@ -61,9 +61,10 @@ Vercel project settings: Framework preset "Other", no build command, output dire
 
 At your domain registrar, add:
 
-| Type  | Host / Name | Value                       |
-|-------|-------------|-----------------------------|
+| Type  | Host / Name | Value                                         |
+|-------|-------------|-----------------------------------------------|
 | A     | @           | 76.76.21.21 (confirm in the Vercel dashboard) |
-| CNAME | www         | cname.vercel-dns.com        |
+| CNAME | www         | 85b2c86ec9f27f79.vercel-dns-017.com           |
 
-Vercel also shows the exact values under Project Settings, then Domains.
+The CNAME target is specific to this Vercel project. Always copy the exact values shown
+under Project Settings, then Domains, since Vercel can change them.
