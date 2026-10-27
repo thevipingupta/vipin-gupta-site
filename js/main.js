@@ -75,6 +75,24 @@
     return h('p', { class: 'empty' }, message);
   }
 
+  /* Appends a "to be added" note and returns true when a section has no items yet. */
+  function noneYet(root, items, message) {
+    if (items && items.length) return false;
+    root.appendChild(emptyState(message));
+    return true;
+  }
+
+  function unique(list) {
+    return list.filter(function (v, i) { return list.indexOf(v) === i; });
+  }
+
+  function selectField(id, labelText, options) {
+    var select = h('select', { id: id, name: id },
+      options.map(function (o) { return h('option', { value: o }, o); }));
+    var wrap = h('div', { class: 'field' }, h('label', { for: id }, labelText), select);
+    return { select: select, wrap: wrap };
+  }
+
   /* ---------- sections ------------------------------------------------- */
 
   function sectionHead(eyebrow, title, intro) {
@@ -85,6 +103,10 @@
     );
   }
 
+  function initials(name) {
+    return String(name).split(/\s+/).map(function (w) { return w.charAt(0); }).join('').slice(0, 2).toUpperCase();
+  }
+
   function renderOverview(root) {
     var p = C.profile;
     var fallback = h('span', { class: 'headshot-fallback', 'aria-hidden': 'true' }, initials(p.name));
@@ -92,8 +114,8 @@
       class: 'headshot',
       src: p.headshot,
       alt: p.headshotAlt,
-      width: 400,
-      height: 400,
+      width: 800,
+      height: 800,
       decoding: 'async'
     });
     var wrap = h('div', { class: 'headshot-wrap' }, img, fallback);
@@ -136,18 +158,15 @@
     ));
   }
 
-  function initials(name) {
-    return String(name).split(/\s+/).map(function (w) { return w.charAt(0); }).join('').slice(0, 2).toUpperCase();
-  }
-
   function renderExperience(root) {
     root.appendChild(sectionHead('Career', 'Experience',
-      'Roles across data platforms, master data and AI enablement.'));
+      'Roles across data platforms, master data, cloud and AI enablement.'));
+    if (noneYet(root, C.experience, 'Roles will appear here.')) return;
     var items = C.experience.map(function (role) {
       return h('li', { class: 'timeline__item' },
         h('span', { class: 'timeline__dot', 'aria-hidden': 'true' }),
         h('article', { class: 'card' },
-          h('p', { class: 'timeline__dates' }, role.start + ' to ' + role.end),
+          h('p', { class: 'timeline__dates' }, role.dates),
           h('h3', null, role.title),
           h('p', { class: 'card__meta' }, role.company + (role.location ? ' · ' + role.location : '')),
           h('ul', null, role.highlights.map(function (line) {
@@ -161,6 +180,7 @@
   function renderResearch(root) {
     root.appendChild(sectionHead('Research', 'Research and publications',
       'Peer-reviewed work, white papers and book chapters. Filter by year or type.'));
+    if (noneYet(root, C.publications, 'Publications will appear here.')) return;
 
     var years = unique(C.publications.map(function (p) { return String(p.year); })).sort().reverse();
     var types = unique(C.publications.map(function (p) { return p.type; })).sort();
@@ -198,6 +218,7 @@
   function renderInnovation(root) {
     root.appendChild(sectionHead('Invention', 'Innovation and patents',
       'Patents, filings and inventions. Status reflects the most recent public record.'));
+    if (noneYet(root, C.innovation, 'Patents and inventions will appear here.')) return;
     root.appendChild(h('div', { class: 'grid grid--2' },
       C.innovation.map(function (item) {
         var accent = item.status === 'Granted' ? 'badge--accent' : 'badge';
@@ -215,6 +236,7 @@
   function renderMedia(root) {
     root.appendChild(sectionHead('In the press', 'Media',
       'Articles, podcasts, videos and press mentions.'));
+    if (noneYet(root, C.media, 'Press, articles, podcasts and videos will appear here.')) return;
     var rows = C.media.slice().sort(byDateDesc('date'));
     root.appendChild(h('div', { class: 'stack' },
       rows.map(function (m) {
@@ -231,6 +253,7 @@
   function renderSpeaking(root) {
     root.appendChild(sectionHead('On stage', 'Speaking',
       'Talks and panels. Slides and recordings are linked where available.'));
+    if (noneYet(root, C.speaking, 'Talks and panels will appear here.')) return;
     var rows = C.speaking.slice().sort(byDateDesc('date'));
     root.appendChild(h('div', { class: 'grid grid--2' },
       rows.map(function (s) {
@@ -250,6 +273,7 @@
   function renderJudging(root) {
     root.appendChild(sectionHead('Service', 'Judging and peer review',
       'Judging panels, editorial boards and peer review roles.'));
+    if (noneYet(root, C.judging, 'Judging and peer review roles will appear here.')) return;
     root.appendChild(h('div', { class: 'grid grid--2' },
       C.judging.map(function (j) {
         return h('article', { class: 'card' },
@@ -281,18 +305,34 @@
   }
 
   function renderAwards(root) {
-    root.appendChild(sectionHead('Recognition', 'Awards and membership'));
-    root.appendChild(h('p', { class: 'subhead' }, 'Awards and honors'));
+    root.appendChild(sectionHead('Recognition', 'Awards, certifications and membership'));
+
+    root.appendChild(h('p', { class: 'subhead' }, 'Certifications'));
     root.appendChild(h('div', { class: 'grid grid--2' },
-      C.awards.slice().sort(byDateDesc('year')).map(function (a) {
+      C.certifications.map(function (c) {
         return h('article', { class: 'card' },
-          h('span', { class: 'badge' }, String(a.year)),
-          h('h3', null, a.title),
-          h('p', { class: 'card__meta' }, a.issuer)
+          h('h3', null, c.name),
+          h('p', { class: 'card__meta' }, c.issuer)
         );
       })
     ));
+
+    root.appendChild(h('p', { class: 'subhead' }, 'Awards and honors'));
+    if (noneYet(root, C.awards, 'Awards and honors will appear here.')) { /* fall through to memberships */ }
+    else {
+      root.appendChild(h('div', { class: 'grid grid--2' },
+        C.awards.slice().sort(byDateDesc('year')).map(function (a) {
+          return h('article', { class: 'card' },
+            h('span', { class: 'badge' }, String(a.year)),
+            h('h3', null, a.title),
+            h('p', { class: 'card__meta' }, a.issuer)
+          );
+        })
+      ));
+    }
+
     root.appendChild(h('p', { class: 'subhead' }, 'Professional memberships'));
+    if (noneYet(root, C.memberships, 'Professional memberships will appear here.')) return;
     root.appendChild(h('div', { class: 'grid grid--2' },
       C.memberships.map(function (m) {
         return h('article', { class: 'card' },
@@ -307,36 +347,26 @@
   function renderDocuments(root) {
     root.appendChild(sectionHead('Downloads', 'Documents and achievements',
       'Downloadable documents and a timeline of recent achievements.'));
-    root.appendChild(h('div', { class: 'grid grid--2' },
-      C.documents.map(function (d) {
-        return h('article', { class: 'card doc-card' },
-          h('div', null, h('span', { class: 'badge badge--accent' }, d.type)),
-          h('h3', null, d.title),
-          h('p', { class: 'card__meta' }, d.description),
-          h('a', { class: 'btn btn--primary', href: d.file, download: '' },
-            h('span', { 'aria-hidden': 'true' }, '↓'), ' Download PDF')
-        );
-      })
-    ));
+    if (!noneYet(root, C.documents, 'Downloadable documents will appear here.')) {
+      root.appendChild(h('div', { class: 'grid grid--2' },
+        C.documents.map(function (d) {
+          return h('article', { class: 'card doc-card' },
+            h('div', null, h('span', { class: 'badge badge--accent' }, d.type)),
+            h('h3', null, d.title),
+            h('p', { class: 'card__meta' }, d.description),
+            h('a', { class: 'btn btn--primary', href: d.file, download: '' },
+              h('span', { 'aria-hidden': 'true' }, '↓'), ' Download PDF')
+          );
+        })
+      ));
+    }
     root.appendChild(h('p', { class: 'subhead' }, 'Achievements'));
+    if (noneYet(root, C.achievements, 'Achievements will appear here.')) return;
     root.appendChild(h('ol', { class: 'achievements' },
       C.achievements.map(function (a) {
         return h('li', null, h('span', { class: 'achievements__date' }, formatDate(a.date)), a.text);
       })
     ));
-  }
-
-  /* ---------- form helpers -------------------------------------------- */
-
-  function unique(list) {
-    return list.filter(function (v, i) { return list.indexOf(v) === i; });
-  }
-
-  function selectField(id, labelText, options) {
-    var select = h('select', { id: id, name: id },
-      options.map(function (o) { return h('option', { value: o }, o); }));
-    var wrap = h('div', { class: 'field' }, h('label', { for: id }, labelText), select);
-    return { select: select, wrap: wrap };
   }
 
   /* ---------- tabs ----------------------------------------------------- */

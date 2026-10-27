@@ -33,7 +33,7 @@ Do not add confidential client names or unpublished client work. Describe client
 ## Documents
 
 Add a PDF to `documents/`, then add an entry to `documents` in `js/content.js` with its `file` path.
-The sample PDFs in that folder are placeholders. Replace them with the real files.
+The documents folder is empty for now. Only publish PDFs with client names and internal references removed.
 
 ## Preview locally
 
